@@ -1,0 +1,23 @@
+{
+  "name": "deploy-doctor",
+  "version": "1.0.0",
+  "description": "CLI tool that scans a Node.js backend repo for deployment risks before shipping to production",
+  "bin": {
+    "deploy-doctor": "./bin/deploy-doctor.js"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node bin/deploy-doctor.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "express": "^4.18.2",
+    "glob": "^10.3.10",
+    "prompts": "^2.4.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "license": "MIT"
+}
