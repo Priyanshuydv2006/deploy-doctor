@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Deploy Doctor</title>
+<style>
+:root{
+  --bg:#06080f;--surface:#0d1117;--surface2:#161b22;--surface3:#1c2333;
+  --border:#21262d;--border2:#30363d;
+  --text:#e6edf3;--muted:#8b949e;--faint:#484f58;
+  --accent:#7c3aed;--accent2:#a855f7;--accent3:#c084fc;
+  --teal:#0ea5e9;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;
+  --green-bg:rgba(34,197,94,.08);--green-border:rgba(34,197,94,.25);
+  --yellow-bg:rgba(245,158,11,.08);--yellow-border:rgba(245,158,11,.25);
+  --red-bg:rgba(239,68,68,.08);--red-border:rgba(239,68,68,.25);
+  --teal-bg:rgba(14,165,233,.08);--teal-border:rgba(14,165,233,.25);
+  --glow:rgba(124,58,237,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── Background ── */
+.noise{position:fixed;inset:0;opacity:.025;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);z-index:0;pointer-events:none;animation:float 14s ease-in-out infinite alternate}
+.orb1{width:700px;height:700px;background:radial-gradient(circle,rgba(124,58,237,.18),transparent 70%);top:-250px;left:-200px}
+.orb2{width:500px;height:500px;background:radial-gradient(circle,rgba(14,165,233,.12),transparent 70%);bottom:-150px;right:-150px;animation-delay:-7s}
+.orb3{width:400px;height:400px;background:radial-gradient(circle,rgba(168,85,247,.10),transparent 70%);top:40%;left:50%;transform:translate(-50%,-50%);animation-delay:-3s}
+@keyframes float{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,20px) scale(1.06)}}
+.orb3{animation-name:float3}
+@keyframes float3{from{transform:translate(-50%,-50%) scale(1)}to{transform:translate(calc(-50% + 20px),calc(-50% + 15px)) scale(1.04)}}
+
+/* ── Layout ── */
+.wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 24px 100px}
+
+/* ── Header ── */
+header{padding:56px 0 40px;text-align:center}
+.logo-mark{display:inline-flex;align-items:center;gap:16px;margin-bottom:20px}
+.logo-icon{
+  width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 0 0 1px rgba(124,58,237,.3),0 8px 32px rgba(124,58,237,.4);
+  animation:icon-glow 3s ease-in-out infinite alternate
+}
+@keyframes icon-glow{from{box-shadow:0 0 0 1px rgba(124,58,237,.3),0 8px 32px rgba(124,58,237,.4)}to{box-shadow:0 0 0 1px rgba(168,85,247,.5),0 8px 48px rgba(168,85,247,.6),0 0 80px rgba(124,58,237,.2)}}
+.logo-name{font-size:38px;font-weight:900;letter-spacing:-1.5px;background:linear-gradient(135deg,#f0f6fc 30%,var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{color:var(--muted);font-size:16px;line-height:1.6;max-width:480px;margin:0 auto 28px}
+.badge-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:32px}
+.badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.08em}
+.badge-purple{background:rgba(124,58,237,.15);color:var(--accent3);border:1px solid rgba(124,58,237,.3)}
+.badge-teal{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+
+/* ── Nav tabs ── */
+.nav-tabs{display:inline-flex;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:4px;gap:4px;margin-bottom:36px}
+.nav-tab{padding:9px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s;text-decoration:none;display:inline-block}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 12px rgba(124,58,237,.4)}
+
+/* ── Cards ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 32px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.2)}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title::before{content:'';display:block;width:3px;height:14px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2))}
+
+/* ── Input group ── */
+.input-group{display:flex;gap:10px}
+.input-main{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:13px 18px;color:var(--text);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;font-family:'Cascadia Code','Fira Code',monospace}
+.input-main::placeholder{color:var(--faint)}
+.input-main:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,.2)}
+.btn{padding:13px 24px;border-radius:12px;border:none;cursor:pointer;font-size:14px;font-weight:700;transition:all .2s;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.5)}
+.btn-primary:active{transform:none}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ── Quick picks ── */
+.quick-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.quick-label{font-size:12px;color:var(--faint);font-weight:600}
+.chip{font-size:12px;padding:5px 14px;border-radius:100px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;font-weight:500}
+.chip:hover{border-color:var(--accent);color:var(--text);background:rgba(124,58,237,.08)}
+
+/* ── Progress ── */
+#scan-progress{display:none;margin-top:20px}
+.prog-track{background:var(--surface2);border-radius:100px;height:4px;overflow:hidden;margin-bottom:14px}
+.prog-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--teal));width:0%;transition:width .4s ease;box-shadow:0 0 8px var(--glow)}
+.steps-row{display:flex;gap:20px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--faint);transition:color .3s;font-weight:500}
+.step.active{color:var(--text)}
+.step.done{color:var(--green)}
+.step-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:background .3s,box-shadow .3s;flex-shrink:0}
+.step.active .step-dot{background:var(--accent);box-shadow:0 0 6px var(--accent);animation:dot-pulse .9s ease-in-out infinite}
+.step.done .step-dot{background:var(--green);animation:none}
+@keyframes dot-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Error ── */
+#error-banner{display:none;background:var(--red-bg);border:1px solid var(--red-border);border-radius:12px;padding:13px 18px;margin-bottom:20px;color:var(--red);font-size:14px;animation:slide-in .3s ease}
+
+/* ── Results ── */
+#results{display:none}
+
+/* Verdict */
+.verdict{border-radius:16px;padding:22px 28px;margin-bottom:24px;display:flex;align-items:center;gap:20px;animation:slide-in .5s cubic-bezier(.16,1,.3,1)}
+.verdict.safe{background:var(--green-bg);border:1px solid var(--green-border)}
+.verdict.unsafe{background:var(--red-bg);border:1px solid var(--red-border)}
+.verdict-icon{font-size:44px;flex-shrink:0;animation:pop .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes pop{0%{transform:scale(0) rotate(-15deg)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.verdict-title{font-size:22px;font-weight:900;letter-spacing:-.5px}
+.verdict.safe .verdict-title{color:var(--green)}
+.verdict.unsafe .verdict-title{color:var(--red)}
+.verdict-sub{font-size:14px;color:var(--muted);margin-top:3px}
+.verdict-path{font-family:monospace;font-size:11px;color:var(--faint);margin-top:6px}
+
+/* Summary grid */
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.sum-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 22px;text-align:center;animation:slide-in .5s cubic-bezier(.16,1,.3,1) both}
+.sum-card:nth-child(1){animation-delay:.04s}.sum-card:nth-child(2){animation-delay:.09s}.sum-card:nth-child(3){animation-delay:.14s}
+.sum-card.crit{border-color:var(--red-border);background:var(--red-bg)}
+.sum-card.warn{border-color:var(--yellow-border);background:var(--yellow-bg)}
+.sum-card.info{border-color:var(--teal-border);background:var(--teal-bg)}
+.sum-num{font-size:52px;font-weight:900;line-height:1;animation:count-pop .7s cubic-bezier(.16,1,.3,1) both}
+.sum-card.crit .sum-num{color:var(--red)}.sum-card.warn .sum-num{color:var(--yellow)}.sum-card.info .sum-num{color:var(--teal)}
+.sum-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;opacity:.6;margin-top:5px}
+@keyframes count-pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Donut */
+.chart-wrap{display:flex;justify-content:center;margin:8px 0 28px}
+.donut-cont{position:relative;width:160px;height:160px}
+.donut-svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-num{font-size:34px;font-weight:900;line-height:1}
+.donut-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Check groups */
+.section-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--faint);margin-bottom:12px}
+.check-group{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:12px;overflow:hidden;animation:slide-in .4s cubic-bezier(.16,1,.3,1) both;transition:border-color .2s}
+.check-group:hover{border-color:var(--border2)}
+.group-header{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;user-select:none;transition:background .15s}
+.group-header:hover{background:rgba(255,255,255,.02)}
+.g-icon{font-size:20px;flex-shrink:0}
+.g-name{font-weight:700;font-size:15px;flex:1}
+.g-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px}
+.b-crit{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.b-warn{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border)}
+.b-info{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.b-ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.g-chev{color:var(--faint);transition:transform .25s;font-size:12px}
+.check-group.open .g-chev{transform:rotate(180deg)}
+.group-body{display:none;padding:0 20px 16px}
+.check-group.open .group-body{display:block}
+
+/* Issue cards */
+.issue{background:var(--surface2);border-radius:12px;padding:14px 16px;margin-bottom:8px;border-left:3px solid transparent;transition:transform .15s,box-shadow .15s;animation:issue-in .35s cubic-bezier(.16,1,.3,1) both}
+.issue:hover{transform:translateX(4px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.issue.crit{border-color:var(--red)}.issue.warn{border-color:var(--yellow)}.issue.info{border-color:var(--teal)}
+@keyframes issue-in{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.issue-loc{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.loc-file{font-family:monospace;font-size:11px;background:var(--surface3);padding:2px 8px;border-radius:4px;color:var(--muted)}
+.sev-tag{font-size:10px;font-weight:800;padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.08em}
+.sev-crit{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.sev-warn{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border)}
+.sev-info{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.issue-desc{font-size:13px;line-height:1.6;margin-bottom:9px;color:#c9d1d9}
+.issue-fix{display:flex;align-items:flex-start;gap:8px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.12);border-radius:8px;padding:9px 13px;font-size:12px;color:#7ee787;line-height:1.5}
+.fix-arrow{flex-shrink:0}
+
+/* Fix action */
+.fix-row{margin-top:14px;padding-top:13px;border-top:1px solid var(--border)}
+.btn-fix{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:9px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 12px rgba(34,197,94,.25)}
+.btn-fix:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(34,197,94,.35)}
+#fix-result{display:none;margin-top:10px;padding:10px 14px;background:var(--green-bg);border:1px solid var(--green-border);border-radius:9px;font-size:13px;color:var(--green)}
+#fix-result code{font-family:monospace;background:rgba(34,197,94,.1);padding:1px 5px;border-radius:3px}
+
+/* Source badge */
+.src-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-left:10px;vertical-align:middle}
+.src-gh{background:rgba(124,58,237,.12);color:var(--accent3);border:1px solid rgba(124,58,237,.25)}
+.src-local{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+
+/* Clean banner */
+.clean-wrap{text-align:center;padding:56px;animation:slide-in .5s cubic-bezier(.16,1,.3,1)}
+.clean-emoji{font-size:72px;display:block;margin-bottom:16px;animation:pop .6s cubic-bezier(.36,.07,.19,.97)}
+.clean-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:8px}
+.clean-sub{color:var(--muted);font-size:15px}
+
+/* Source badge inside verdict */
+.verdict-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 9px;border-radius:100px;font-weight:700;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);margin-left:10px;vertical-align:middle}
+
+@keyframes slide-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.summary-grid{grid-template-columns:1fr}.input-group{flex-direction:column}.logo-name{font-size:28px}.nav-tabs{flex-wrap:wrap;justify-content:center}}
+
+/* ── Heal page ── */
+#page-heal{display:none}
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+
+/* Terminal */
+.term-box{background:#010409;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.6)}
+.term-bar{background:var(--surface2);padding:11px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.tdot{width:11px;height:11px;border-radius:50%}
+.tdot-r{background:#ff5f57}.tdot-y{background:#febc2e}.tdot-g{background:#28c840}
+.term-lbl{flex:1;text-align:center;font-size:12px;color:var(--muted);font-family:monospace}
+.term-stat{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px}
+.stat-idle{color:var(--muted);background:var(--surface3)}
+.stat-run{color:var(--teal);background:var(--teal-bg);animation:blink .9s ease-in-out infinite}
+.stat-ok{color:var(--green);background:var(--green-bg)}
+.stat-fail{color:var(--red);background:var(--red-bg)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+#term-out{font-family:'Cascadia Code','Fira Code','Courier New',monospace;font-size:12.5px;line-height:1.75;padding:18px 20px;min-height:400px;max-height:560px;overflow-y:auto;background:#010409}
+#term-out::-webkit-scrollbar{width:5px}
+#term-out::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.tl{display:flex;gap:9px;animation:tl-in .18s ease both}
+@keyframes tl-in{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:translateX(0)}}
+.tl-ts{color:#3d444d;font-size:10.5px;padding-top:2px;flex-shrink:0;min-width:68px}
+.tl-ic{flex-shrink:0;width:14px}
+.tl-msg{flex:1;white-space:pre-wrap;word-break:break-word}
+.tl.t-step .tl-msg{color:var(--teal);font-weight:700;font-size:13px}
+.tl.t-ok .tl-msg{color:var(--green)}
+.tl.t-warn .tl-msg{color:var(--yellow)}
+.tl.t-err .tl-msg{color:var(--red)}
+.tl.t-dim .tl-msg{color:#3d444d}
+.tl.t-sep .tl-msg{color:#21262d}
+.diff-blk{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:4px 0 4px 23px;font-size:12px;line-height:1.6}
+.da{color:var(--green)}.dr{color:var(--red)}.dc{color:#3d444d}
+.cursor{display:inline-block;width:7px;height:13px;background:var(--accent);margin-left:2px;animation:cur .7s step-end infinite;vertical-align:middle}
+@keyframes cur{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Result banner */
+#heal-result{display:none;border-radius:16px;padding:20px 24px;margin-top:20px;animation:slide-in .4s cubic-bezier(.16,1,.3,1)}
+#heal-result.ok{background:var(--green-bg);border:1px solid var(--green-border)}
+#heal-result.fail{background:var(--red-bg);border:1px solid var(--red-border)}
+.res-icon{font-size:38px;margin-bottom:8px}
+.res-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.ok .res-title{color:var(--green)}.fail .res-title{color:var(--red)}
+.res-sub{color:var(--muted);font-size:14px}
+
+footer{position:relative;z-index:1;text-align:center;padding:22px;color:var(--faint);font-size:12px;border-top:1px solid var(--border);margin-top:40px}
+footer strong{color:var(--accent3)}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="wrap">
+  <!-- HEADER -->
+  <header>
+    <div class="logo-mark">
+      <div class="logo-icon">🩺</div>
+      <span class="logo-name">Deploy Doctor</span>
+    </div>
+    <p class="tagline">Scan your Node.js backend for deployment risks — and watch it self-heal in real time</p>
+    <div class="badge-row">
+      <span class="badge badge-purple">IBM Bob 2.0 Hackathon</span>
+      <span class="badge badge-teal">Release &amp; Deployment</span>
+      <span class="badge badge-green">Node.js Static Analysis</span>
+    </div>
+    <div class="nav-tabs">
+      <a class="nav-tab active" id="tab-scan" onclick="switchTab('scan')">📊 Scanner</a>
+      <a class="nav-tab" id="tab-heal" onclick="switchTab('heal')">🔧 Self-Heal Loop</a>
+    </div>
+  </header>
+
+  <!-- ═══════ SCAN PAGE ═══════ -->
+  <div id="page-scan">
+    <div class="card">
+      <div class="card-title">Repository path or GitHub URL</div>
+      <div class="input-group">
+        <input id="repo-input" class="input-main" type="text" placeholder="https://github.com/owner/repo  or  ./local-path"/>
+        <button id="scan-btn" class="btn btn-primary" onclick="startScan()">⚡ Scan Now</button>
+      </div>
+      <div class="quick-row">
+        <span class="quick-label">Try:</span>
+        <button class="chip" onclick="fillScan('./sample-repo')">sample-repo (broken) 💣</button>
+        <button class="chip" onclick="fillScan('./heal-demo-app')">heal-demo-app 🔧</button>
+        <button class="chip" onclick="fillScan('https://github.com/expressjs/express')">express/express 🌐</button>
+      </div>
+      <div id="scan-progress">
+        <div class="prog-track"><div id="prog-fill" class="prog-fill"></div></div>
+        <div class="steps-row">
+          <div class="step" id="s-dl"><div class="step-dot"></div>Downloading</div>
+          <div class="step" id="s-sec"><div class="step-dot"></div>Secrets</div>
+          <div class="step" id="s-env"><div class="step-dot"></div>Env vars</div>
+          <div class="step" id="s-sto"><div class="step-dot"></div>Storage</div>
+          <div class="step" id="s-hlt"><div class="step-dot"></div>Health check</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="error-banner"></div>
+    <div id="results"></div>
+  </div>
+
+  <!-- ═══════ HEAL PAGE ═══════ -->
+  <div id="page-heal">
+    <div class="card">
+      <div class="card-title">Self-Healing Configuration</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Repository path</label>
+          <input id="h-repo" class="input-main" type="text" value="./heal-demo-app" placeholder="./my-repo"/>
+        </div>
+        <div class="field">
+          <label>Service URL override <span style="color:var(--faint)">(optional)</span></label>
+          <input id="h-url" class="input-main" type="text" placeholder="https://your-app.onrender.com"/>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="heal-btn" onclick="startHeal()" style="width:100%">⚡ Run Self-Healing Loop</button>
+    </div>
+
+    <div class="term-box">
+      <div class="term-bar">
+        <div class="tdot tdot-r"></div><div class="tdot tdot-y"></div><div class="tdot tdot-g"></div>
+        <span class="term-lbl">deploy-doctor heal</span>
+        <span class="term-stat stat-idle" id="heal-stat">● idle</span>
+      </div>
+      <div id="term-out">
+        <div class="tl t-dim"><span class="tl-msg">Press "Run Self-Healing Loop" to watch the magic.<span class="cursor"></span></span></div>
+      </div>
+    </div>
+    <div id="heal-result"></div>
+  </div>
+</div>
+
+<footer>IBM Bob 2.0 Hackathon · Release &amp; Deployment Track · Built with <strong>Deploy Doctor</strong></footer>
+
+<script>
+/* ═══════════════ TAB SWITCHING ═══════════════ */
+function switchTab(t) {
+  document.getElementById('page-scan').style.display = t==='scan'?'block':'none';
+  document.getElementById('page-heal').style.display = t==='heal'?'block':'none';
+  document.getElementById('tab-scan').className = 'nav-tab'+(t==='scan'?' active':'');
+  document.getElementById('tab-heal').className = 'nav-tab'+(t==='heal'?' active':'');
+}
+
+/* ═══════════════ SCAN ═══════════════ */
+function fillScan(v){ document.getElementById('repo-input').value=v; startScan(); }
+
+const STEPS_LOCAL=['s-sec','s-env','s-sto','s-hlt'];
+const STEPS_GH=['s-dl','s-sec','s-env','s-sto','s-hlt'];
+let curSteps=STEPS_LOCAL, stepTimer=null;
+
+function isGH(s){ return s.includes('github.com')||/^[\w-]+\/[\w.-]+/.test(s); }
+
+async function startScan(){
+  const rp=document.getElementById('repo-input').value.trim();
+  if(!rp){shake();return;}
+  document.getElementById('error-banner').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('results').innerHTML='';
+  const btn=document.getElementById('scan-btn');
+  btn.disabled=true;
+  const gh=isGH(rp);
+  btn.textContent=gh?'⏳ Fetching…':'⏳ Scanning…';
+  showProg(gh);
+  try{
+    const r=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({repoPath:rp})});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||'Scan failed');
+    await endProg();
+    renderResults(d);
+  }catch(e){hideProg();showErr(e.message);}
+  finally{btn.disabled=false;btn.textContent='⚡ Scan Now';}
+}
+
+function showProg(gh){
+  curSteps=gh?STEPS_GH:STEPS_LOCAL;
+  document.getElementById('s-dl').style.display=gh?'flex':'none';
+  document.getElementById('scan-progress').style.display='block';
+  curSteps.forEach(s=>{const el=document.getElementById(s);if(el)el.className='step';});
+  setProg(0); let i=0;
+  const delay=()=>gh&&i===0?2000+Math.random()*500:500+Math.random()*250;
+  function next(){
+    if(i<curSteps.length){
+      if(i>0){const p=document.getElementById(curSteps[i-1]);if(p)p.className='step done';}
+      const c=document.getElementById(curSteps[i]);if(c)c.className='step active';
+      setProg((i+1)/curSteps.length*85);i++;
+      stepTimer=setTimeout(next,delay());
+    }
+  }
+  next();
+}
+async function endProg(){
+  clearTimeout(stepTimer);
+  curSteps.forEach(s=>{const el=document.getElementById(s);if(el)el.className='step done';});
+  setProg(100); await sleep(350); hideProg();
+}
+function hideProg(){document.getElementById('scan-progress').style.display='none';setProg(0);}
+function setProg(p){document.getElementById('prog-fill').style.width=p+'%';}
+function showErr(m){const el=document.getElementById('error-banner');el.textContent='✖  '+m;el.style.display='block';}
+function shake(){const el=document.getElementById('repo-input');el.style.borderColor='var(--red)';setTimeout(()=>el.style.borderColor='',900);}
+
+/* ─── Render results ─── */
+const CM={'Hardcoded Secrets':{icon:'🔑',order:0},'Ephemeral Storage':{icon:'💾',order:1},'Environment Variables':{icon:'🌿',order:2},'Health Check Endpoint':{icon:'❤️',order:3}};
+const SL={Critical:'CRITICAL',Warning:'WARNING',Info:'INFO'};
+const SC={Critical:'crit',Warning:'warn',Info:'info'};
+
+function renderResults(data){
+  const{summary,byCheck,scannedPath,source,owner,repo,branch}=data;
+  const el=document.getElementById('results');
+  el.style.display='block';
+  const sb=source==='github'
+    ?`<span class="verdict-badge">⬡ ${esc(owner)}/${esc(repo)}@${esc(branch)}</span>`
+    :`<span class="verdict-badge">⬡ local</span>`;
+  let h='';
+  if(summary.safeToDeploy){
+    h+=`<div class="verdict safe"><div class="verdict-icon">✅</div><div><div class="verdict-title">Safe to Deploy ${sb}</div><div class="verdict-sub">No critical issues found. Cleared for liftoff 🚀</div><div class="verdict-path">${esc(scannedPath)}</div></div></div>`;
+  }else{
+    h+=`<div class="verdict unsafe"><div class="verdict-icon">🚨</div><div><div class="verdict-title">NOT Safe to Deploy ${sb}</div><div class="verdict-sub">${summary.critical} critical issue${summary.critical!==1?'s':''} must be fixed before deploying.</div><div class="verdict-path">${esc(scannedPath)}</div></div></div>`;
+  }
+  h+=`<div class="summary-grid">
+    <div class="sum-card crit"><div class="sum-num" id="nc">0</div><div class="sum-lbl">🔴 Critical</div></div>
+    <div class="sum-card warn"><div class="sum-num" id="nw">0</div><div class="sum-lbl">🟡 Warning</div></div>
+    <div class="sum-card info"><div class="sum-num" id="ni">0</div><div class="sum-lbl">🔵 Info</div></div>
+  </div>`;
+  if(summary.total>0) h+=donut(summary);
+  if(summary.total===0){
+    h+=`<div class="clean-wrap"><span class="clean-emoji">🎉</span><div class="clean-title">Zero issues!</div><div class="clean-sub">All checks passed. This repo is deploy-ready.</div></div>`;
+    el.innerHTML=h; return;
+  }
+  h+=`<div class="section-label">Issues by check</div>`;
+  const sorted=Object.entries(byCheck).sort(([a],[b])=>((CM[a]||{order:9}).order)-((CM[b]||{order:9}).order));
+  sorted.forEach(([cn,issues],gi)=>{
+    const meta=CM[cn]||{icon:'🔍'};
+    const top=issues.find(i=>i.severity==='Critical')?'Critical':issues.find(i=>i.severity==='Warning')?'Warning':'Info';
+    const bc='b-'+SC[top];
+    const isH=cn==='Health Check Endpoint';
+    h+=`<div class="check-group" id="cg${gi}" style="animation-delay:${gi*.06}s">
+      <div class="group-header" onclick="tog(${gi})">
+        <span class="g-icon">${meta.icon}</span>
+        <span class="g-name">${esc(cn)}</span>
+        <span class="g-badge ${bc}">${issues.length} issue${issues.length!==1?'s':''}</span>
+        <span class="g-chev">▼</span>
+      </div>
+      <div class="group-body">`;
+    issues.forEach((iss,ii)=>{
+      const sc2=SC[iss.severity]||'info';
+      h+=`<div class="issue ${sc2}" style="animation-delay:${ii*.05}s">`;
+      if(iss.file)h+=`<div class="issue-loc"><span class="loc-file">${esc(iss.file)}${iss.line?':'+iss.line:''}</span><span class="sev-tag sev-${sc2}">${SL[iss.severity]}</span></div>`;
+      else h+=`<div class="issue-loc"><span class="sev-tag sev-${sc2}">${SL[iss.severity]}</span></div>`;
+      h+=`<div class="issue-desc">${esc(iss.description)}</div>`;
+      h+=`<div class="issue-fix"><span class="fix-arrow">→</span><span>${esc(iss.fix)}</span></div>`;
+      h+=`</div>`;
+    });
+    if(isH){
+      h+=`<div class="fix-row"><button class="btn btn-fix" onclick="applyFix()">⚡ Auto-fix: Insert /health route</button><div id="fix-result"></div></div>`;
+    }
+    h+=`</div></div>`;
+  });
+  el.innerHTML=h;
+  countUp('nc',summary.critical);countUp('nw',summary.warning);countUp('ni',summary.info);
+  requestAnimationFrame(()=>animDonut(summary));
+  if(sorted.length>0)tog(0);
+}
+
+/* ─── Donut ─── */
+function donut(s){
+  const r=62,cx=80,cy=80,circ=2*Math.PI*r;
+  const segs=[{val:s.critical,c:'#ef4444'},{val:s.warning,c:'#f59e0b'},{val:s.info,c:'#0ea5e9'}].filter(x=>x.val>0);
+  let off=0,svg='';
+  segs.forEach(sg=>{
+    const pct=sg.val/s.total,dash=pct*circ,gap=circ-dash;
+    svg+=`<circle class="ds" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${sg.c}" stroke-width="16" stroke-dasharray="${dash} ${gap}" stroke-dashoffset="${circ*(1-off)}" stroke-linecap="round" opacity="0" style="transition:opacity .4s,stroke-dashoffset .8s cubic-bezier(.16,1,.3,1)"/>`;
+    off+=pct;
+  });
+  return `<div class="chart-wrap"><div class="donut-cont"><svg class="donut-svg" width="160" height="160" viewBox="0 0 160 160"><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#161b22" stroke-width="16"/>${svg}</svg><div class="donut-center"><div class="donut-num" id="dn">0</div><div class="donut-lbl">issues</div></div></div></div>`;
+}
+function animDonut(s){document.querySelectorAll('.ds').forEach((el,i)=>setTimeout(()=>el.setAttribute('opacity','1'),i*100));countUp('dn',s.total);}
+
+/* ─── Helpers ─── */
+function tog(i){const el=document.getElementById('cg'+i);if(el)el.classList.toggle('open');}
+function countUp(id,target){
+  const el=document.getElementById(id);if(!el)return;
+  const dur=600,t0=performance.now();
+  function f(now){const t=Math.min((now-t0)/dur,1),e=1-Math.pow(1-t,3);el.textContent=Math.round(e*target);if(t<1)requestAnimationFrame(f);}
+  requestAnimationFrame(f);
+}
+async function applyFix(){
+  const rp=document.getElementById('repo-input').value.trim();
+  const btn=event.target;btn.disabled=true;btn.textContent='⏳ Applying…';
+  const r=await fetch('/api/fix/health',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({repoPath:rp})});
+  const d=await r.json();
+  const el=document.getElementById('fix-result');el.style.display='block';
+  if(d.success){el.innerHTML=`✔ Written to <code>${esc(d.file)}</code>`;btn.textContent='✅ Applied!';}
+  else{el.style.background='var(--red-bg)';el.style.color='var(--red)';el.textContent='✖ '+(d.error||'Fix failed');btn.disabled=false;btn.textContent='⚡ Auto-fix: Insert /health route';}
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+document.getElementById('repo-input').addEventListener('keydown',e=>{if(e.key==='Enter')startScan();});
+
+/* ═══════════════ HEAL ═══════════════ */
+let healEvt=null,healRunning=false;
+const TICONS={step:'▶',ok:'✔',warn:'⚠',err:'✖',dim:'·',normal:' '};
+const TCLS={step:'t-step',ok:'t-ok',warn:'t-warn',err:'t-err',dim:'t-dim',normal:'t-norm'};
+let diffBlk=null;
+
+function setHealStat(s){
+  const el=document.getElementById('heal-stat');
+  el.className='term-stat stat-'+s;
+  el.textContent=s==='run'?'● running':s==='ok'?'✔ success':s==='fail'?'✖ failed':'● idle';
+}
+function tlog(msg,style='normal',ts=''){
+  const out=document.getElementById('term-out');
+  if(msg.match(/^[─═]{8,}$/)){appendTLine(msg,'t-sep','');return;}
+  if(style==='step') diffBlk=null;
+  if(msg.startsWith('--- ')||msg.startsWith('+++ ')){openDiff();return;}
+  if(msg.startsWith('+ ')||msg.startsWith('- ')||msg.startsWith('  ')){appendDiff(msg);return;}
+  diffBlk=null;
+  appendTLine(msg,TCLS[style]||'t-norm',ts);
+}
+function openDiff(){
+  if(diffBlk) return;
+  const out=document.getElementById('term-out');
+  diffBlk=document.createElement('div');diffBlk.className='diff-blk';
+  out.appendChild(diffBlk);scrollT();
+}
+function appendDiff(line){
+  if(!diffBlk)openDiff();
+  const d=document.createElement('div');
+  d.className=line.startsWith('+ ')?'da':line.startsWith('- ')?'dr':'dc';
+  d.textContent=line;diffBlk.appendChild(d);scrollT();
+}
+function appendTLine(msg,cls,ts){
+  const out=document.getElementById('term-out');
+  const d=document.createElement('div');d.className='tl '+cls;
+  d.innerHTML=`<span class="tl-ts">${esc(ts)}</span><span class="tl-ic">${TICONS[cls.replace('t-','')]||' '}</span><span class="tl-msg">${esc(msg)}</span>`;
+  out.appendChild(d);scrollT();
+}
+function scrollT(){const e=document.getElementById('term-out');e.scrollTop=e.scrollHeight;}
+
+async function startHeal(){
+  if(healRunning)return;
+  healRunning=true;diffBlk=null;
+  const rp=document.getElementById('h-repo').value.trim();
+  const su=document.getElementById('h-url').value.trim();
+  if(!rp){alert('Enter a repo path');healRunning=false;return;}
+  document.getElementById('term-out').innerHTML='';
+  document.getElementById('heal-result').style.display='none';
+  document.getElementById('heal-btn').disabled=true;
+  document.getElementById('heal-btn').textContent='⏳ Healing…';
+  setHealStat('run');
+  if(healEvt)healEvt.close();
+  healEvt=new EventSource('/api/heal/stream');
+  healEvt.onmessage=e=>{
+    const ev=JSON.parse(e.data);
+    if(ev.type==='connected')return;
+    if(ev.type==='start'){tlog('🩺 Deploy Doctor — Self-Healing Loop','t-step','');tlog('Repo: '+ev.repoPath,'dim','');tlog('Platform: Render','dim','');tlog('════════════════════════════════════════════════════════════','','' );return;}
+    if(ev.type==='log'){tlog(ev.msg,ev.style,ev.ts);return;}
+    if(ev.type==='done'){setHealStat('ok');showHealResult(true);healCleanup();return;}
+    if(ev.type==='error'){tlog('Fatal: '+ev.msg,'err','');setHealStat('fail');showHealResult(false);healCleanup();}
+  };
+  healEvt.onerror=()=>{if(!healRunning)return;tlog('Lost connection','err','');setHealStat('fail');healCleanup();};
+  try{
+    await fetch('/api/heal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({repoPath:rp,serviceUrl:su||undefined})});
+  }catch(err){tlog('Failed to start: '+err.message,'err','');setHealStat('fail');healCleanup();}
+}
+function showHealResult(ok){
+  const el=document.getElementById('heal-result');el.style.display='block';
+  el.className=ok?'ok':'fail';
+  el.innerHTML=ok
+    ?`<div class="res-icon">✅</div><div class="res-title">Self-Healing Succeeded</div><div class="res-sub">App patched, pushed to GitHub, redeployed on Render, and verified healthy.</div>`
+    :`<div class="res-icon">❌</div><div class="res-title">Healing Loop Ended</div><div class="res-sub">Check the log above. Manual intervention may be needed.</div>`;
+}
+function healCleanup(){
+  healRunning=false;
+  document.getElementById('heal-btn').disabled=false;
+  document.getElementById('heal-btn').textContent='⚡ Run Self-Healing Loop';
+  if(healEvt){healEvt.close();healEvt=null;}
+}
+</script>
+</body>
+</html>
