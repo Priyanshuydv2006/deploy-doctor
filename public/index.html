@@ -21,7 +21,7 @@
 html{scroll-behavior:smooth}
 body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
-/* ── Background ── */
+/* â”€â”€ Background â”€â”€ */
 .noise{position:fixed;inset:0;opacity:.025;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .orb{position:fixed;border-radius:50%;filter:blur(100px);z-index:0;pointer-events:none;animation:float 14s ease-in-out infinite alternate}
 .orb1{width:700px;height:700px;background:radial-gradient(circle,rgba(124,58,237,.18),transparent 70%);top:-250px;left:-200px}
@@ -31,10 +31,10 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .orb3{animation-name:float3}
 @keyframes float3{from{transform:translate(-50%,-50%) scale(1)}to{transform:translate(calc(-50% + 20px),calc(-50% + 15px)) scale(1.04)}}
 
-/* ── Layout ── */
+/* â”€â”€ Layout â”€â”€ */
 .wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 24px 100px}
 
-/* ── Header ── */
+/* â”€â”€ Header â”€â”€ */
 header{padding:56px 0 40px;text-align:center}
 .logo-mark{display:inline-flex;align-items:center;gap:16px;margin-bottom:20px}
 .logo-icon{
@@ -52,18 +52,18 @@ header{padding:56px 0 40px;text-align:center}
 .badge-teal{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
 .badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
 
-/* ── Nav tabs ── */
+/* â”€â”€ Nav tabs â”€â”€ */
 .nav-tabs{display:inline-flex;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:4px;gap:4px;margin-bottom:36px}
 .nav-tab{padding:9px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s;text-decoration:none;display:inline-block}
 .nav-tab:hover{color:var(--text)}
 .nav-tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 12px rgba(124,58,237,.4)}
 
-/* ── Cards ── */
+/* â”€â”€ Cards â”€â”€ */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 32px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.2)}
 .card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .card-title::before{content:'';display:block;width:3px;height:14px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2))}
 
-/* ── Input group ── */
+/* â”€â”€ Input group â”€â”€ */
 .input-group{display:flex;gap:10px}
 .input-main{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:13px 18px;color:var(--text);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;font-family:'Cascadia Code','Fira Code',monospace}
 .input-main::placeholder{color:var(--faint)}
@@ -74,13 +74,13 @@ header{padding:56px 0 40px;text-align:center}
 .btn-primary:active{transform:none}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 
-/* ── Quick picks ── */
+/* â”€â”€ Quick picks â”€â”€ */
 .quick-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
 .quick-label{font-size:12px;color:var(--faint);font-weight:600}
 .chip{font-size:12px;padding:5px 14px;border-radius:100px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;font-weight:500}
 .chip:hover{border-color:var(--accent);color:var(--text);background:rgba(124,58,237,.08)}
 
-/* ── Progress ── */
+/* â”€â”€ Progress â”€â”€ */
 #scan-progress{display:none;margin-top:20px}
 .prog-track{background:var(--surface2);border-radius:100px;height:4px;overflow:hidden;margin-bottom:14px}
 .prog-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--teal));width:0%;transition:width .4s ease;box-shadow:0 0 8px var(--glow)}
@@ -93,10 +93,10 @@ header{padding:56px 0 40px;text-align:center}
 .step.done .step-dot{background:var(--green);animation:none}
 @keyframes dot-pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ── Error ── */
+/* â”€â”€ Error â”€â”€ */
 #error-banner{display:none;background:var(--red-bg);border:1px solid var(--red-border);border-radius:12px;padding:13px 18px;margin-bottom:20px;color:var(--red);font-size:14px;animation:slide-in .3s ease}
 
-/* ── Results ── */
+/* â”€â”€ Results â”€â”€ */
 #results{display:none}
 
 /* Verdict */
@@ -188,7 +188,7 @@ header{padding:56px 0 40px;text-align:center}
 @keyframes slide-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){.summary-grid{grid-template-columns:1fr}.input-group{flex-direction:column}.logo-name{font-size:28px}.nav-tabs{flex-wrap:wrap;justify-content:center}}
 
-/* ── Heal page ── */
+/* â”€â”€ Heal page â”€â”€ */
 #page-heal{display:none}
 .fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -248,34 +248,34 @@ footer strong{color:var(--accent3)}
   <!-- HEADER -->
   <header>
     <div class="logo-mark">
-      <div class="logo-icon">🩺</div>
+      <div class="logo-icon">ðŸ©º</div>
       <span class="logo-name">Deploy Doctor</span>
     </div>
-    <p class="tagline">Scan your Node.js backend for deployment risks — and watch it self-heal in real time</p>
+    <p class="tagline">Scan your Node.js backend for deployment risks â€” and watch it self-heal in real time</p>
     <div class="badge-row">
       <span class="badge badge-purple">IBM Bob 2.0 Hackathon</span>
       <span class="badge badge-teal">Release &amp; Deployment</span>
       <span class="badge badge-green">Node.js Static Analysis</span>
     </div>
     <div class="nav-tabs">
-      <a class="nav-tab active" id="tab-scan" onclick="switchTab('scan')">📊 Scanner</a>
-      <a class="nav-tab" id="tab-heal" onclick="switchTab('heal')">🔧 Self-Heal Loop</a>
+      <a class="nav-tab active" id="tab-scan" onclick="switchTab('scan')">ðŸ“Š Scanner</a>
+      <a class="nav-tab" id="tab-heal" onclick="switchTab('heal')">ðŸ”§ Self-Heal Loop</a>
     </div>
   </header>
 
-  <!-- ═══════ SCAN PAGE ═══════ -->
+  <!-- â•â•â•â•â•â•â• SCAN PAGE â•â•â•â•â•â•â• -->
   <div id="page-scan">
     <div class="card">
       <div class="card-title">Repository path or GitHub URL</div>
       <div class="input-group">
         <input id="repo-input" class="input-main" type="text" placeholder="https://github.com/owner/repo  or  ./local-path"/>
-        <button id="scan-btn" class="btn btn-primary" onclick="startScan()">⚡ Scan Now</button>
+        <button id="scan-btn" class="btn btn-primary" onclick="startScan()">âš¡ Scan Now</button>
       </div>
       <div class="quick-row">
         <span class="quick-label">Try:</span>
-        <button class="chip" onclick="fillScan('./sample-repo')">sample-repo (broken) 💣</button>
-        <button class="chip" onclick="fillScan('./heal-demo-app')">heal-demo-app 🔧</button>
-        <button class="chip" onclick="fillScan('https://github.com/expressjs/express')">express/express 🌐</button>
+        <button class="chip" onclick="fillScan('Priyanshuydv2006/deploy-doctor-self-heal')">deploy-doctor-self-heal ðŸ’£</button>
+        <button class="chip" onclick="fillScan('Priyanshuydv2006/deploy-doctor')">deploy-doctor ðŸ©º</button>
+        <button class="chip" onclick="fillScan('https://github.com/expressjs/express')">express/express ðŸŒ</button>
       </div>
       <div id="scan-progress">
         <div class="prog-track"><div id="prog-fill" class="prog-fill"></div></div>
@@ -293,28 +293,28 @@ footer strong{color:var(--accent3)}
     <div id="results"></div>
   </div>
 
-  <!-- ═══════ HEAL PAGE ═══════ -->
+  <!-- â•â•â•â•â•â•â• HEAL PAGE â•â•â•â•â•â•â• -->
   <div id="page-heal">
     <div class="card">
       <div class="card-title">Self-Healing Configuration</div>
       <div class="fields-grid">
         <div class="field">
-          <label>Repository path</label>
-          <input id="h-repo" class="input-main" type="text" value="./heal-demo-app" placeholder="./my-repo"/>
+          <label>Repository path or GitHub URL</label>
+          <input id="h-repo" class="input-main" type="text" value="Priyanshuydv2006/deploy-doctor-self-heal" placeholder="owner/repo or ./local-path"/>
         </div>
         <div class="field">
           <label>Service URL override <span style="color:var(--faint)">(optional)</span></label>
           <input id="h-url" class="input-main" type="text" placeholder="https://your-app.onrender.com"/>
         </div>
       </div>
-      <button class="btn btn-primary" id="heal-btn" onclick="startHeal()" style="width:100%">⚡ Run Self-Healing Loop</button>
+      <button class="btn btn-primary" id="heal-btn" onclick="startHeal()" style="width:100%">âš¡ Run Self-Healing Loop</button>
     </div>
 
     <div class="term-box">
       <div class="term-bar">
         <div class="tdot tdot-r"></div><div class="tdot tdot-y"></div><div class="tdot tdot-g"></div>
         <span class="term-lbl">deploy-doctor heal</span>
-        <span class="term-stat stat-idle" id="heal-stat">● idle</span>
+        <span class="term-stat stat-idle" id="heal-stat">â— idle</span>
       </div>
       <div id="term-out">
         <div class="tl t-dim"><span class="tl-msg">Press "Run Self-Healing Loop" to watch the magic.<span class="cursor"></span></span></div>
@@ -324,10 +324,10 @@ footer strong{color:var(--accent3)}
   </div>
 </div>
 
-<footer>IBM Bob 2.0 Hackathon · Release &amp; Deployment Track · Built with <strong>Deploy Doctor</strong></footer>
+<footer>IBM Bob 2.0 Hackathon Â· Release &amp; Deployment Track Â· Built with <strong>Deploy Doctor</strong></footer>
 
 <script>
-/* ═══════════════ TAB SWITCHING ═══════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• TAB SWITCHING â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function switchTab(t) {
   document.getElementById('page-scan').style.display = t==='scan'?'block':'none';
   document.getElementById('page-heal').style.display = t==='heal'?'block':'none';
@@ -335,7 +335,7 @@ function switchTab(t) {
   document.getElementById('tab-heal').className = 'nav-tab'+(t==='heal'?' active':'');
 }
 
-/* ═══════════════ SCAN ═══════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SCAN â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function fillScan(v){ document.getElementById('repo-input').value=v; startScan(); }
 
 const STEPS_LOCAL=['s-sec','s-env','s-sto','s-hlt'];
@@ -353,7 +353,7 @@ async function startScan(){
   const btn=document.getElementById('scan-btn');
   btn.disabled=true;
   const gh=isGH(rp);
-  btn.textContent=gh?'⏳ Fetching…':'⏳ Scanning…';
+  btn.textContent=gh?'â³ Fetchingâ€¦':'â³ Scanningâ€¦';
   showProg(gh);
   try{
     const r=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({repoPath:rp})});
@@ -362,7 +362,7 @@ async function startScan(){
     await endProg();
     renderResults(d);
   }catch(e){hideProg();showErr(e.message);}
-  finally{btn.disabled=false;btn.textContent='⚡ Scan Now';}
+  finally{btn.disabled=false;btn.textContent='âš¡ Scan Now';}
 }
 
 function showProg(gh){
@@ -389,11 +389,11 @@ async function endProg(){
 }
 function hideProg(){document.getElementById('scan-progress').style.display='none';setProg(0);}
 function setProg(p){document.getElementById('prog-fill').style.width=p+'%';}
-function showErr(m){const el=document.getElementById('error-banner');el.textContent='✖  '+m;el.style.display='block';}
+function showErr(m){const el=document.getElementById('error-banner');el.textContent='âœ–  '+m;el.style.display='block';}
 function shake(){const el=document.getElementById('repo-input');el.style.borderColor='var(--red)';setTimeout(()=>el.style.borderColor='',900);}
 
-/* ─── Render results ─── */
-const CM={'Hardcoded Secrets':{icon:'🔑',order:0},'Ephemeral Storage':{icon:'💾',order:1},'Environment Variables':{icon:'🌿',order:2},'Health Check Endpoint':{icon:'❤️',order:3}};
+/* â”€â”€â”€ Render results â”€â”€â”€ */
+const CM={'Hardcoded Secrets':{icon:'ðŸ”‘',order:0},'Ephemeral Storage':{icon:'ðŸ’¾',order:1},'Environment Variables':{icon:'ðŸŒ¿',order:2},'Health Check Endpoint':{icon:'â¤ï¸',order:3}};
 const SL={Critical:'CRITICAL',Warning:'WARNING',Info:'INFO'};
 const SC={Critical:'crit',Warning:'warn',Info:'info'};
 
@@ -402,28 +402,28 @@ function renderResults(data){
   const el=document.getElementById('results');
   el.style.display='block';
   const sb=source==='github'
-    ?`<span class="verdict-badge">⬡ ${esc(owner)}/${esc(repo)}@${esc(branch)}</span>`
-    :`<span class="verdict-badge">⬡ local</span>`;
+    ?`<span class="verdict-badge">â¬¡ ${esc(owner)}/${esc(repo)}@${esc(branch)}</span>`
+    :`<span class="verdict-badge">â¬¡ local</span>`;
   let h='';
   if(summary.safeToDeploy){
-    h+=`<div class="verdict safe"><div class="verdict-icon">✅</div><div><div class="verdict-title">Safe to Deploy ${sb}</div><div class="verdict-sub">No critical issues found. Cleared for liftoff 🚀</div><div class="verdict-path">${esc(scannedPath)}</div></div></div>`;
+    h+=`<div class="verdict safe"><div class="verdict-icon">âœ…</div><div><div class="verdict-title">Safe to Deploy ${sb}</div><div class="verdict-sub">No critical issues found. Cleared for liftoff ðŸš€</div><div class="verdict-path">${esc(scannedPath)}</div></div></div>`;
   }else{
-    h+=`<div class="verdict unsafe"><div class="verdict-icon">🚨</div><div><div class="verdict-title">NOT Safe to Deploy ${sb}</div><div class="verdict-sub">${summary.critical} critical issue${summary.critical!==1?'s':''} must be fixed before deploying.</div><div class="verdict-path">${esc(scannedPath)}</div></div></div>`;
+    h+=`<div class="verdict unsafe"><div class="verdict-icon">ðŸš¨</div><div><div class="verdict-title">NOT Safe to Deploy ${sb}</div><div class="verdict-sub">${summary.critical} critical issue${summary.critical!==1?'s':''} must be fixed before deploying.</div><div class="verdict-path">${esc(scannedPath)}</div></div></div>`;
   }
   h+=`<div class="summary-grid">
-    <div class="sum-card crit"><div class="sum-num" id="nc">0</div><div class="sum-lbl">🔴 Critical</div></div>
-    <div class="sum-card warn"><div class="sum-num" id="nw">0</div><div class="sum-lbl">🟡 Warning</div></div>
-    <div class="sum-card info"><div class="sum-num" id="ni">0</div><div class="sum-lbl">🔵 Info</div></div>
+    <div class="sum-card crit"><div class="sum-num" id="nc">0</div><div class="sum-lbl">ðŸ”´ Critical</div></div>
+    <div class="sum-card warn"><div class="sum-num" id="nw">0</div><div class="sum-lbl">ðŸŸ¡ Warning</div></div>
+    <div class="sum-card info"><div class="sum-num" id="ni">0</div><div class="sum-lbl">ðŸ”µ Info</div></div>
   </div>`;
   if(summary.total>0) h+=donut(summary);
   if(summary.total===0){
-    h+=`<div class="clean-wrap"><span class="clean-emoji">🎉</span><div class="clean-title">Zero issues!</div><div class="clean-sub">All checks passed. This repo is deploy-ready.</div></div>`;
+    h+=`<div class="clean-wrap"><span class="clean-emoji">ðŸŽ‰</span><div class="clean-title">Zero issues!</div><div class="clean-sub">All checks passed. This repo is deploy-ready.</div></div>`;
     el.innerHTML=h; return;
   }
   h+=`<div class="section-label">Issues by check</div>`;
   const sorted=Object.entries(byCheck).sort(([a],[b])=>((CM[a]||{order:9}).order)-((CM[b]||{order:9}).order));
   sorted.forEach(([cn,issues],gi)=>{
-    const meta=CM[cn]||{icon:'🔍'};
+    const meta=CM[cn]||{icon:'ðŸ”'};
     const top=issues.find(i=>i.severity==='Critical')?'Critical':issues.find(i=>i.severity==='Warning')?'Warning':'Info';
     const bc='b-'+SC[top];
     const isH=cn==='Health Check Endpoint';
@@ -432,7 +432,7 @@ function renderResults(data){
         <span class="g-icon">${meta.icon}</span>
         <span class="g-name">${esc(cn)}</span>
         <span class="g-badge ${bc}">${issues.length} issue${issues.length!==1?'s':''}</span>
-        <span class="g-chev">▼</span>
+        <span class="g-chev">â–¼</span>
       </div>
       <div class="group-body">`;
     issues.forEach((iss,ii)=>{
@@ -441,11 +441,11 @@ function renderResults(data){
       if(iss.file)h+=`<div class="issue-loc"><span class="loc-file">${esc(iss.file)}${iss.line?':'+iss.line:''}</span><span class="sev-tag sev-${sc2}">${SL[iss.severity]}</span></div>`;
       else h+=`<div class="issue-loc"><span class="sev-tag sev-${sc2}">${SL[iss.severity]}</span></div>`;
       h+=`<div class="issue-desc">${esc(iss.description)}</div>`;
-      h+=`<div class="issue-fix"><span class="fix-arrow">→</span><span>${esc(iss.fix)}</span></div>`;
+      h+=`<div class="issue-fix"><span class="fix-arrow">â†’</span><span>${esc(iss.fix)}</span></div>`;
       h+=`</div>`;
     });
     if(isH){
-      h+=`<div class="fix-row"><button class="btn btn-fix" onclick="applyFix()">⚡ Auto-fix: Insert /health route</button><div id="fix-result"></div></div>`;
+      h+=`<div class="fix-row"><button class="btn btn-fix" onclick="applyFix()">âš¡ Auto-fix: Insert /health route</button><div id="fix-result"></div></div>`;
     }
     h+=`</div></div>`;
   });
@@ -455,7 +455,7 @@ function renderResults(data){
   if(sorted.length>0)tog(0);
 }
 
-/* ─── Donut ─── */
+/* â”€â”€â”€ Donut â”€â”€â”€ */
 function donut(s){
   const r=62,cx=80,cy=80,circ=2*Math.PI*r;
   const segs=[{val:s.critical,c:'#ef4444'},{val:s.warning,c:'#f59e0b'},{val:s.info,c:'#0ea5e9'}].filter(x=>x.val>0);
@@ -469,7 +469,7 @@ function donut(s){
 }
 function animDonut(s){document.querySelectorAll('.ds').forEach((el,i)=>setTimeout(()=>el.setAttribute('opacity','1'),i*100));countUp('dn',s.total);}
 
-/* ─── Helpers ─── */
+/* â”€â”€â”€ Helpers â”€â”€â”€ */
 function tog(i){const el=document.getElementById('cg'+i);if(el)el.classList.toggle('open');}
 function countUp(id,target){
   const el=document.getElementById(id);if(!el)return;
@@ -479,31 +479,31 @@ function countUp(id,target){
 }
 async function applyFix(){
   const rp=document.getElementById('repo-input').value.trim();
-  const btn=event.target;btn.disabled=true;btn.textContent='⏳ Applying…';
+  const btn=event.target;btn.disabled=true;btn.textContent='â³ Applyingâ€¦';
   const r=await fetch('/api/fix/health',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({repoPath:rp})});
   const d=await r.json();
   const el=document.getElementById('fix-result');el.style.display='block';
-  if(d.success){el.innerHTML=`✔ Written to <code>${esc(d.file)}</code>`;btn.textContent='✅ Applied!';}
-  else{el.style.background='var(--red-bg)';el.style.color='var(--red)';el.textContent='✖ '+(d.error||'Fix failed');btn.disabled=false;btn.textContent='⚡ Auto-fix: Insert /health route';}
+  if(d.success){el.innerHTML=`âœ” Written to <code>${esc(d.file)}</code>`;btn.textContent='âœ… Applied!';}
+  else{el.style.background='var(--red-bg)';el.style.color='var(--red)';el.textContent='âœ– '+(d.error||'Fix failed');btn.disabled=false;btn.textContent='âš¡ Auto-fix: Insert /health route';}
 }
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 document.getElementById('repo-input').addEventListener('keydown',e=>{if(e.key==='Enter')startScan();});
 
-/* ═══════════════ HEAL ═══════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HEAL â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 let healEvt=null,healRunning=false;
-const TICONS={step:'▶',ok:'✔',warn:'⚠',err:'✖',dim:'·',normal:' '};
+const TICONS={step:'â–¶',ok:'âœ”',warn:'âš ',err:'âœ–',dim:'Â·',normal:' '};
 const TCLS={step:'t-step',ok:'t-ok',warn:'t-warn',err:'t-err',dim:'t-dim',normal:'t-norm'};
 let diffBlk=null;
 
 function setHealStat(s){
   const el=document.getElementById('heal-stat');
   el.className='term-stat stat-'+s;
-  el.textContent=s==='run'?'● running':s==='ok'?'✔ success':s==='fail'?'✖ failed':'● idle';
+  el.textContent=s==='run'?'â— running':s==='ok'?'âœ” success':s==='fail'?'âœ– failed':'â— idle';
 }
 function tlog(msg,style='normal',ts=''){
   const out=document.getElementById('term-out');
-  if(msg.match(/^[─═]{8,}$/)){appendTLine(msg,'t-sep','');return;}
+  if(msg.match(/^[â”€â•]{8,}$/)){appendTLine(msg,'t-sep','');return;}
   if(style==='step') diffBlk=null;
   if(msg.startsWith('--- ')||msg.startsWith('+++ ')){openDiff();return;}
   if(msg.startsWith('+ ')||msg.startsWith('- ')||msg.startsWith('  ')){appendDiff(msg);return;}
@@ -539,14 +539,14 @@ async function startHeal(){
   document.getElementById('term-out').innerHTML='';
   document.getElementById('heal-result').style.display='none';
   document.getElementById('heal-btn').disabled=true;
-  document.getElementById('heal-btn').textContent='⏳ Healing…';
+  document.getElementById('heal-btn').textContent='â³ Healingâ€¦';
   setHealStat('run');
   if(healEvt)healEvt.close();
   healEvt=new EventSource('/api/heal/stream');
   healEvt.onmessage=e=>{
     const ev=JSON.parse(e.data);
     if(ev.type==='connected')return;
-    if(ev.type==='start'){tlog('🩺 Deploy Doctor — Self-Healing Loop','t-step','');tlog('Repo: '+ev.repoPath,'dim','');tlog('Platform: Render','dim','');tlog('════════════════════════════════════════════════════════════','','' );return;}
+    if(ev.type==='start'){tlog('ðŸ©º Deploy Doctor â€” Self-Healing Loop','t-step','');tlog('Repo: '+ev.repoPath,'dim','');tlog('Platform: Render','dim','');tlog('â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•','','' );return;}
     if(ev.type==='log'){tlog(ev.msg,ev.style,ev.ts);return;}
     if(ev.type==='done'){setHealStat('ok');showHealResult(true);healCleanup();return;}
     if(ev.type==='error'){tlog('Fatal: '+ev.msg,'err','');setHealStat('fail');showHealResult(false);healCleanup();}
@@ -560,13 +560,13 @@ function showHealResult(ok){
   const el=document.getElementById('heal-result');el.style.display='block';
   el.className=ok?'ok':'fail';
   el.innerHTML=ok
-    ?`<div class="res-icon">✅</div><div class="res-title">Self-Healing Succeeded</div><div class="res-sub">App patched, pushed to GitHub, redeployed on Render, and verified healthy.</div>`
-    :`<div class="res-icon">❌</div><div class="res-title">Healing Loop Ended</div><div class="res-sub">Check the log above. Manual intervention may be needed.</div>`;
+    ?`<div class="res-icon">âœ…</div><div class="res-title">Self-Healing Succeeded</div><div class="res-sub">App patched, pushed to GitHub, redeployed on Render, and verified healthy.</div>`
+    :`<div class="res-icon">âŒ</div><div class="res-title">Healing Loop Ended</div><div class="res-sub">Check the log above. Manual intervention may be needed.</div>`;
 }
 function healCleanup(){
   healRunning=false;
   document.getElementById('heal-btn').disabled=false;
-  document.getElementById('heal-btn').textContent='⚡ Run Self-Healing Loop';
+  document.getElementById('heal-btn').textContent='âš¡ Run Self-Healing Loop';
   if(healEvt){healEvt.close();healEvt=null;}
 }
 </script>
