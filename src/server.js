@@ -10,7 +10,7 @@ const { checkHealthEndpoint } = require('./checks/healthEndpoint');
 const { applyHealthCheckFix } = require('./fixer');
 const { parseGitHubInput, fetchGitHubRepo, rimrafSync } = require('./github');
 
-// ── SSE heal-log bus ──────────────────────────────────────────────────────────
+// â”€â”€ SSE heal-log bus â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Active SSE clients listening for heal events
 const healClients = new Set();
 
@@ -31,10 +31,10 @@ function makeSSENarrator() {
     broadcastHealEvent({ type: 'log', style, msg: clean, ts });
     // Also print to terminal
     const prefix = `[${ts}]`;
-    if (style === 'step')    console.log(`\n${prefix} ▶ ${msg}`);
-    else if (style === 'ok') console.log(`${prefix} ✔ ${msg}`);
-    else if (style === 'warn')console.log(`${prefix} ⚠ ${msg}`);
-    else if (style === 'err') console.log(`${prefix} ✖ ${msg}`);
+    if (style === 'step')    console.log(`\n${prefix} â–¶ ${msg}`);
+    else if (style === 'ok') console.log(`${prefix} âœ” ${msg}`);
+    else if (style === 'warn')console.log(`${prefix} âš  ${msg}`);
+    else if (style === 'err') console.log(`${prefix} âœ– ${msg}`);
     else                      console.log(`${prefix}   ${msg}`);
   };
 }
@@ -76,7 +76,7 @@ async function runChecks(absolutePath) {
 }
 
 // POST /api/scan  { "repoPath": "/absolute/or/relative/path" }
-// Also accepts GitHub URLs — auto-detected and handled via /api/scan/github logic
+// Also accepts GitHub URLs â€” auto-detected and handled via /api/scan/github logic
 app.post('/api/scan', async (req, res) => {
   const { repoPath } = req.body;
   if (!repoPath || typeof repoPath !== 'string') {
@@ -148,7 +148,7 @@ app.post('/api/fix/health', async (req, res) => {
   }
 });
 
-// ── SSE endpoint: GET /api/heal/stream ───────────────────────────────────────
+// â”€â”€ SSE endpoint: GET /api/heal/stream â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.get('/api/heal/stream', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -156,10 +156,19 @@ app.get('/api/heal/stream', (req, res) => {
   res.setHeader('X-Accel-Buffering', 'no');
   res.write('data: {"type":"connected"}\n\n');
   healClients.add(res);
-  req.on('close', () => healClients.delete(res));
+
+  // Keepalive ping every 20s â€” prevents Render/nginx from closing idle SSE connections
+  const keepalive = setInterval(() => {
+    try { res.write(': ping\n\n'); } catch { clearInterval(keepalive); }
+  }, 20000);
+
+  req.on('close', () => {
+    clearInterval(keepalive);
+    healClients.delete(res);
+  });
 });
 
-// ── POST /api/heal  { repoPath, serviceId?, serviceUrl? } ────────────────────
+// â”€â”€ POST /api/heal  { repoPath, serviceId?, serviceUrl? } â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.post('/api/heal', async (req, res) => {
   const { repoPath, serviceId, serviceUrl } = req.body || {};
   if (!repoPath) return res.status(400).json({ error: 'repoPath is required' });
@@ -175,21 +184,43 @@ app.post('/api/heal', async (req, res) => {
     });
   }
 
-  // Run heal async, streaming events via SSE
   broadcastHealEvent({ type: 'start', repoPath });
   const { runHealWithNarrator } = require('./heal');
+
+  // If input is a GitHub URL/shorthand, download it to a temp dir first
+  const isGitHub = parseGitHubInput(repoPath) &&
+    (repoPath.includes('github.com') || /^[\w-]+\/[\w.-]+/.test(repoPath));
+
+  let tempDir = null;
+  let resolvedPath = repoPath;
+
+  if (isGitHub) {
+    broadcastHealEvent({ type: 'log', style: 'step', msg: `Downloading GitHub repo: ${repoPath}â€¦`, ts: new Date().toLocaleTimeString() });
+    try {
+      const { tempDir: td } = await fetchGitHubRepo(repoPath);
+      tempDir = td;
+      resolvedPath = td;
+      broadcastHealEvent({ type: 'log', style: 'ok', msg: 'Repo downloaded â€” starting heal loop', ts: new Date().toLocaleTimeString() });
+    } catch (err) {
+      broadcastHealEvent({ type: 'error', msg: `Failed to download repo: ${err.message}` });
+      return;
+    }
+  }
+
   try {
-    await runHealWithNarrator(repoPath, { serviceId, serviceUrl }, makeSSENarrator());
+    await runHealWithNarrator(resolvedPath, { serviceId, serviceUrl }, makeSSENarrator());
     broadcastHealEvent({ type: 'done' });
   } catch (err) {
     broadcastHealEvent({ type: 'error', msg: err.message });
+  } finally {
+    if (tempDir) rimrafSync(tempDir);
   }
 });
 
 function startServer(port = 4242) {
   app.listen(port, () => {
-    console.log(`\n🩺 Deploy Doctor dashboard → http://localhost:${port}\n`);
-    console.log(`   Heal dashboard  → http://localhost:${port}/heal.html\n`);
+    console.log(`\nðŸ©º Deploy Doctor dashboard â†’ http://localhost:${port}\n`);
+    console.log(`   Heal dashboard  â†’ http://localhost:${port}/heal.html\n`);
   });
 }
 
